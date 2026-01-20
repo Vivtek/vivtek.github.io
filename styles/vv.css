@@ -9,6 +9,12 @@ font-family: arial, sans-serif;
 p.smtitle {
 margin-left:0px;background-color:#eeeeee;font-weight:bold;
 }
+h2 {
+font-family: arial, sans-serif;
+font-weight: bold;
+font-size: medium;
+color:black;
+}
 .sidemenu p {
 font-size:small;
 margin-top:0px;
