@@ -54,7 +54,7 @@ font-size:x-small;
 border: 1px solid #336600;
 }
 .content {
-
+max-width: 70em;
 }
 pre.code {
   margin: .5em 1em;
