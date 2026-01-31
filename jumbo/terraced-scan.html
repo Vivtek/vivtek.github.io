@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<title>The architecture of Jumbo</title>
+<link href="/styles/vv.css" rel="stylesheet">
+</head>
+<body>
+<table width="100%">
+<tr>
+<td valign="top" width="150px"><div class="sidebar">
+<div class="border">
+<div class="sidemenu">
+<p class="smtitle">vivtek</p>
+<p>[ <a href="/">home</a> ]</p>
+<p>[ <a href="/blog/">blog</a> ]</p>
+<p>[ <a href="/recent.html">recent</a> ]</p>
+<p>[ <a href="/projects/">programming</a> ]</p>
+<p>[ <a href="/translation/">translation</a> ]</p>
+<p>[ <a href="/fiction/">fiction</a> ]</p>
+<p>[ <a href="/contact.html">contact</a> ]</p>
+<p class="smtitle">jumbo</p>
+                                                          <p>[ <a href="/jumbo/">the project</a> ]</p>
+                                                          <p>[ <a href="/jumbo/domain">what it's about</a> ]</p>
+                                                          <p>[ <a href="/jumbo/terraced-scan">how it works</a> ]</p>
+                                                          <p>[ <a href="/jumbo/chunkabet">the chunkabet</a> ]</p>
+
+</div></div></div>
+</td>
+<td valign="top"><div class="content">
+
+<div class="title">The architecture of Jumbo</div>
+<div class="date">Published 2025-11-08 </div>
+
+<p>The architecture devised by Hofstadter and implemented in about a dozen different projects over the space of a couple of decades doesn't strictly have a name, but the
+key feature, the <em>core</em> feature really, the one that sets it apart from other approaches, is something he called the <em>parallel terraced scan</em>, which I will shorten
+a bit to just "terraced scan." Since I originally wrote
+this text in 2024, I've developed a Perl module that prototypes this style. Soon I want to have some documentation that presents it on its own, but in the meantime
+this page can sit in the Jumbo project, the first application of my engine to an established "classical" FARG domain.</p>
+
+<p>It's probably best to explain the terraced scan by contrasting it with what we expect computers to do, what we mean when we say that computers are "programmed".
+Originally, the
+word "programming" just meant to schedule tasks, to specify for example a list of things that needed to be done, and have the computer work down it until it got to the end.
+This makes up about 90% of all "programming" done today, and about 10% of anything that's called "artificial intelligence". In fact, today's primary example of AI, generative
+models like ChatGPT, doesn't do <em>anything</em> like that&mdash;an LLM just shoves input words through an enormous linear algebra matrix and gets different words out on the other side.</p>
+
+<p>Somewhere between those two extremes are things like rule-based programming, where we don't tell the computer exactly what to do or in what order, but rather define a
+bunch of rules that our solution (or whatever) should be consistent with, and tell the computer to work through the rules until it comes up with a result. This is the
+way we talk to databases, for instance, and it's a little closer to the way the terraced scan works, except that the terraced scan focuses on even smaller bits
+of action than rules or database queries.</p>
+
+<p>The essential parts of the architecture are the Workspace, which contains all the data we're working on, and the Coderack, which is a list of very simple tasks that examine
+bits of the data in the Workspace and make small changes. These tasks are called "codelets". You might think of the Coderack as a queue&mdash;except it isn't. In fact, it's almost
+the opposite of a queue, because the entire machinery works by selecting codelets off the rack <em>at random</em>. All we can do is set an urgency when we post the codelet; that urgency
+can make it more probable that the system will choose it soon, but it's never inevitable.</p>
+
+<p>This stochastic approach is how the terraced scan avoids what we in the business call a "combinatorial explosion", which really just means that when you have too many different
+things to focus on, you're not really able to focus on any of them. If we have a naive program that tries to plan chess moves, for instance, there are dozens of moves that
+can be made on each turn, then dozens that our opponent can make to respond to any of those, and then dozens we can make for any of <em>those</em>&mdash;and very quickly, all the things we
+have to keep track of are simply beyond our memory capacity, not to mention will take a very long time to work through. (Alexandre Linhares has, in fact,
+applied the terraced scan to chess. I haven't read those papers yet, though.)</p>
+
+<p>So the terraced scan just chooses something at random that's probably good, but it also keeps track of a few other things it's doing at the same time (that's
+the "parallel" part of the scan). This sounds like a hopelessly naive approach, but it actually turns out to work pretty well. In fact, it turns out that "programs"
+built using this approach can do a lot of complicated things in ways that are not unlike the way people solve the same problems. By now you probably know why I've
+put the scare quotes around "programs" there, even though we don't really have a better word for them&mdash;it's because we're not actually scheduling our codelet tasks.
+We're really just providing a bunch of suggestions about how the engine should proceed, and trusting that it will probably all work out fine.</p>
+
+<p>Historically, it does. I've mentioned before that about a dozen programs (for lack of a better word) have been written using this approach, through the 90's and the 00's.
+Since then, some of them have been reimplemented by other people&mdash;especially Copycat, which has publicly available code that is well-structured and really well-documented.
+Almost all of these programs have additional parts to their architecture, but they all share this common core of a Workspace and codelets on the Coderack that massage
+it. And each of them took a PhD student about three to six years to write. Back in the day, when I was involved with the group, I proposed coming up with a common core
+engine and porting each domain into that common core. Then life happened. But that's what I'm doing now.</p>
+
+<p>I've started with the Jumbo domain simply because it has almost no architecture beyond the core terraced scan. It does have one oracle it consults to judge letter
+combinations, which is called the chunkabet (because it's an alphabet of word chunks). It's relatively uninteresting and the initial version I cobbled together
+is almost certainly hopelessly inadequate. It doesn't even contain Q, for instance. But I expect the full running model of the domain to unscramble a lot of words
+anyway, and to do it in a way that can be understood and extended.</p>
+
+<h2>A couple of other metaphors</h2>
+
+<p>Hofstadter has a couple of basic metaphors he's used to explain how this architecture works.
+The first is the original one, which gave the Workspace its earlier name of "Cytoplasm". This metaphor explains the terraced scan by analogy to the
+way enzymes assemble proteins in the cytoplasm of the living cell. All the building blocks are in this cellular soup together, and so are the enzymes. As enzymes
+bump into pieces, they glue them together. Let that go on long enough, and you can get a protein of any length&mdash;eventually. And similarly, our codelets do exactly
+that with units of data in the Workspace. Let it go on long enough, and structure is perceived. It feels like magic (it really does feel like magic) but it's not.
+It's just a stochastic process, meaning it's random in nature.</p>
+
+<p>Funny thing, though. As a kid, I read a lot of Robert Heinlein. Now, Heinlein assumed as a matter of faith that eventually there would be machine minds that would
+be our equals. He didn't spend much time worrying about whether they'd be our superiors, or our doom, as is popular today. But our equals? Sure. And if you read
+much Heinlein, you'll note that he essentially believed that the way they'd bootstrap up to being minds would be by using random numbers. In the Number of the Beast,
+Zeb has hooked up a bunch of extra random number banks to the Gay Deceiver because it sounded like a good idea&mdash;but it's not until Deety hooks them up <em>correctly</em>
+that Gay becomes a mind.</p>
+
+<p>So clearly, the terraced scan has what it takes to become a mind, just as soon as I hook the random numbers up correctly.</p>
+
+<p>The other of Hofstadter's metaphors I kind of like is the idea that the problem space is a landscape, in which we've built a dam to fill a lake. As the water rises,
+little fingers of lake spread into the different valleys of the landscape, each one proceeding along a possible path to ... whatever it is we're looking for. The
+metaphor breaks down there, a little. But I still like it. Since Hofstadter did most of this work in Bloomington, Indiana, it's possible he was thinking of Lake Monroe
+when he came up with it&mdash;although Lake Monroe was built in the 60's, long before Hofstadter had ever heard of Bloomington.</p>
+
+<p>Abhijit Mahabal likens the process to a police investigation. One detective is running plates while another searches the victim's apartment or whatever, and as they
+collect information, they write it all up on a central blackboard on the wall. Over time, the structure of the case emerges from all the different angles being explored,
+and perhaps they move resources from one track to another. The terraced scan is in fact one type of what's called a <em>blackboard system</em> for this very reason,
+although that term fell out of use about twenty years ago. (These days they're usually called "multi-agent systems", which sounds cooler while saying less.)</p>
+
+<h2>So how does this work in Jumbo?</h2>
+
+<p>I'm glad you asked! As I'm writing this section, it's pretty early days in the development of Jumbo, the first of what I hope will be several domain
+implementations based on AI::TerracedScan. So this is still going to be just a little handwavy; I've only implemented a couple of codelets while building
+the core infrastructure.</p>
+
+<p><em>[Note 2026-01-31&mdash;I need to revisit this section now that I have some experience behind me.]</em></p>
+
+<p>Remember how I told you the Workspace is where we keep our data? In my implementation, what we keep in the Workspace is "semantic units". This is more aspiration
+than description at the moment; eventually, I hope to build some of the structure from language input and from semantically indexed memory. Right now, though,
+it's just letters and the structures that link them together. And in fact, as of March 28 it's only <a href="one* structure, the ">spark</a>.</p>
+
+<p>We start a run with one unit for each letter in our eventual anagram, and we post a few "spark-scout" codelets. Since initially there's nothing else to do,
+the Coderack will choose a spark-scout every time it runs. Each spark scout then chooses two letter units at random, and determines whether it can build
+a spark unit between them. If it does, it builds the spark and posts a "spark-checker" codelet to the Coderack.</p>
+
+<p>The next time we take a step, we could choose another spark scout, or we might choose the spark checker, but eventually a spark checker will be selected
+and run. It will determine whether its letter pair "looks good" as a possible word component. For instance, "st" looks great, but "bz" looks awful.
+If it likes what it sees, it turns the spark into a bond, and the letter pair is set up for further checks on the road to being something that looks
+like an English word. If it <em>doesn't</em> like what it sees, then it destroys the spark.</p>
+
+<p>Sparks can also target already-bonded letters, but there's a certain probability that they won't. If they do, and the letter pair looks better than the
+one the letter is already participating in, then the existing bond might be broken up and the new one built. And might not. We trust it to
+work out in the end, eventually. The idea here is that something like this&mdash;where letters are mentally compared in a seething process of competing
+perceptions&mdash;is probably more or less what happens in a human mind trying to solve a Jumble.</p>
+
+<p>In the next chapter, we'll talk about the "chunkabet", which is really just a module that judges any given letter group. It's the next chapter because it
+was the first code I wrote in this project. After that, I'll probably do some kind of periodic progress report.</p>
+
+
+</div></td></table>
+
+<br><br><br><br><div class="content">
+   <center><img src="/images/black.gif" height=1 width=300><br>
+   <font size="-1"><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" />
+      </a><br />
+   This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
+   </font>
+</center>
+</div>
+
+<script data-goatcounter="https://vivtek.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
