@@ -1,0 +1,193 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<title>Anagrams and the Jumbo domain</title>
+<link href="/styles/vv.css" rel="stylesheet">
+</head>
+<body>
+<table width="100%">
+<tr>
+<td valign="top" width="150px"><div class="sidebar">
+<div class="border">
+<div class="sidemenu">
+<p class="smtitle">vivtek</p>
+<p>[ <a href="/">home</a> ]</p>
+<p>[ <a href="/blog/">blog</a> ]</p>
+<p>[ <a href="/recent.html">recent</a> ]</p>
+<p>[ <a href="/projects/">programming</a> ]</p>
+<p>[ <a href="/translation/">translation</a> ]</p>
+<p>[ <a href="/fiction/">fiction</a> ]</p>
+<p>[ <a href="/contact.html">contact</a> ]</p>
+<p class="smtitle">jumbo</p>
+                                                              <p>[ <a href="/jumbo/">the project</a> ]</p>
+                                                              <p>[ <a href="/jumbo/domain">what it's about</a> ]</p>
+                                                              <p>[ <a href="/jumbo/terraced-scan">how it works</a> ]</p>
+                                                              <p>[ <a href="/jumbo/chunkabet">the chunkabet</a> ]</p>
+
+</div></div></div>
+</td>
+<td valign="top"><div class="content">
+
+<div class="title">Anagrams and the Jumbo domain</div>
+<div class="date">Published 2024-03-28 </div>
+
+<p>A million years ago, when I was in the tenth grade, I took my Christmas money to the Paperback Booksmith in the Richmond Square Mall and bought a book that
+would change my life. That book was <em>G&ouml;del, Escher, Bach: an Eternal Golden Braid</em>, by Douglas Hofstadter. In the spring, when IU had their annual open-house,
+my high school sent a group down, I was naturally in it, and&mdash;as I had just learned this&mdash;when they asked if anybody had any questions, I asked whether Hofstadter
+was in fact at IU Bloomington, <em>in actual Indiana</em>. He was.</p>
+
+<p>That would have been 1982, the year that Hofstadter says "most" of Jumbo was written. Jumbo was his proof of concept, the first code written on an architecture of his
+own invention that spawned on the order of a dozen doctoral theses, would have spawned mine if the stars had aligned, and is the topic of discourse in this project.
+The architecture never got a name <em>per se</em> since it was effectively redesigned from the ground up for each new doctorate, but its core concept is the parallel terraced
+scan, which I'll expound on in the next chapter. Before I talk about that, I want to set the stage by describing the Jumbo domain: anagrams and how people do them -
+which is markedly different from how conventional software approaches them.</p>
+
+<p>An <em>anagram</em>, just in case you don't already know this, is a rearrangement of letters in an existing word that&mdash;ideally&mdash;is also a word. There's a daily anagram
+puzzle called "<a href="https://www.jumble.com/jumble">Jumble: that scrambled word game</a>" that you've seen if you've ever looked at the comics page of a physical newspaper,
+but in 2024 it's by no means a given that a physical newspaper printed on dead tree tortillas is a common household item for you, so I'll explain. The Jumble game
+has appeared every day since 1954, and its point is that you're given four jumbled sets of letters (two sets of five and two sets of six) that are words if you can
+unjumble them. An example might be IDOVA, which unscrambles to AVOID. In each unjumbled word, two or three letters are circled, and you can take the circled letters
+and unjumble them into a short phrase that's the punchline to a little cartoon joke.</p>
+
+<p>In my own experience, the five-letter jumbles just pop into my head unannounced and are then unshakeable, while the six-letter ones take me a little effort. I'm not
+particularly patient with this kind of thing, so I don't ever actually play Jumble. Doug Hofstadter, though, is exactly the kind of person who gets utterly obsessed
+about the Jumble puzzle, anagrams, poetry based on anagrams, the mathematics of anagrams, poetry, and Jumble, and of course <em>how a human mind does all that</em>, which
+is the part where I wake up and start paying attention.</p>
+
+<p>How is it that some of these words just pop into your head, and others resist popping? When you fiddle with a partial solution and then get that tiny little insight,
+seeing the six-letter word, <em>what actually happened there</em>? It seems really plausible that the same thing is happening with the five-letter words, but it happens
+"too fast for you to see it". (And what does <em>that</em> mean? Who's seeing it? That's a question for another project, but we'll get there, Gentle Reader.)
+Hofstadter was&mdash;and is&mdash;pretty sure that whatever was happening as we mentally perceive this kind of regularity and structure, it's a core part of the human mind,
+and arguably a core part of what it means to be human.</p>
+
+<h2>How the naive programmer solves a word jumble</h2>
+
+<p>It may actually be the case that some of my readers are not programmers. That's an odd life choice, but I still respect you. And just for you, I want to explain how a
+programmer sees anagrams, before talking about why Hofstadter's approach is fundamentally different, and why I care (and why you can, too, but I can't tell you what
+to do; I'm not your real mom).
+Shuffling the letters in an anagram is one of the easiest things in the world to do with a computer. Here's a very simple loop in Perl that selects each letter
+in turn from a five-letter list:</p>
+
+<pre class="code">
+@letters = ('I', 'D', 'O', 'V', 'A');
+for ($l1 = 0; $l1 &lt; 5; $l1++) {
+   $string = $letters[$l1];
+   say $string
+}
+</pre>
+
+
+<p>When you run it, it'll give you I, then D, then O, and so on. Note that this is not how actual programmers write Perl, not if we want to keep being paid, but it is
+how we <em>think</em> about it. To find all the <em>two</em>-letter combinations in the same way I would have when I started learning to program in 1983, you'd do this:</p>
+
+<pre class="code">
+@letters = ('I', 'D', 'O', 'V', 'A');
+for ($l1 = 0; $l1 &lt; 5; $l1++) {
+   $string = $letters[$l1];
+   for ($l2 = 0; $l2 &lt; 5; $l2++) {
+      next if $l2 == $l1;
+      $string = $letters[$l1] . $letters[$l2];
+      say $string
+   }
+}
+</pre>
+
+
+<p>(Except in 1983, I'd have written it in BASIC, not Perl, of course.) Now the program returns "ID", "IO, "IV, "IA", "DI", and so on until it gets to "AV". This,
+by the way, is called a brute-force technique, and if we take it to its logical five-letter conclusion, we see this:</p>
+
+<pre class="code">
+@letters = ('I', 'D', 'O', 'V', 'A');
+for ($l1 = 0; $l1 &lt; 5; $l1++) {
+   for ($l2 = 0; $l2 &lt; 5; $l2++) {
+      next if $l2 == $l1;
+      for ($l3 = 0; $l3 &lt; 5; $l3++) {
+         next if $l3 == $l2 or $l3 == $l1;
+         for ($l4 = 0; $l4 &lt; 5; $l4++) {
+            next if $l4 == $l3 or $l4 == $l2 or $l4 == $l1;
+            for ($l5 = 0; $l5 &lt; 5; $l5++) {
+               next if $l5 == $l4 or $l5 == $l3 or $l5 == $l2 or $l5 == $l1;
+               $string = $letters[$l1] . $letters[$l2] . $letters[$l3] . $letters[$l4] . $letters[$l5];
+               say $string
+            }
+         }
+      }
+   }
+}
+</pre>
+
+
+<p>I do feel the need to stress once again that if you ever find yourself actually writing any code like this, you should seek help immediately, because there are <em>so</em> many things
+wrong with it from the standpoint of performance, ease of maintenance, and just sheer taste. I made about five typos myself while writing it and had to figure out why it never
+returned on one invocation. But this little script will in fact return "IDOVA", "IDOAV", "IDVOA", go on through "DAOVI" and "OVIAD", and second-to-the-last it will finally also
+return "AVOID" before finishing up with "AVODI", which (you'll note) is just the exact reversal of the original string.</p>
+
+<p>Since computers are also really good at looking things up, all we have to do is compare each of those combinations against a list of valid English words, and hey presto!
+We've solved an anagram!
+Except&mdash;and this is key&mdash;we haven't done what a human does when solving an anagram. We don't actually know exactly what a human <em>is</em> doing while solving an anagram, but we
+do know that ain't it.</p>
+
+<h2>How to solve an anagram in a more human way</h2>
+
+<p>Hofstadter&mdash;who after all could also have written this in BASIC in 1982 to solve his word Jumbles&mdash;compared the activity of the bits and pieces of anagrams in the mind's eye
+to the action taking place in the cytoplasm of a living cell when it assembles proteins. The cytoplasm is a soup containing a bunch of enzymes and amino acids, and to make a
+protein, the enzymes chain the right amino acids together&mdash;exactly as letters are assembled to build a word, right? If we were designing an industrial process to do this,
+we'd have a tank of guanine, a tank of alanine, and so on, and valves would mix them together, but in a living cell, it's all just tossed into the same soup. One enzyme will
+simply literally run into a molecule of guanine and grab onto it, then later a molecule of alanine, and glom them together into a two-unit bit of protein. And another enzyme
+will then see that two-unit bit and grab <em>it</em>, and maybe another two- or three-unit bit, and glom <em>those</em> together, and eventually you end up with the protein you need.</p>
+
+<p>So Hofstadter <em>did that</em>, only his amino acids are letters, and his enzymes are little bits of code that know what kinds of letters want to fit together to make a word that's
+English-like. Note that Jumbo doesn't actually return English words&mdash;it doesn't do a dictionary lookup. It just returns a string of letters that "look good", and it finds that
+string using processes that are what we in the business call "cognitively plausible", meaning we don't know how humans do it, but we can't actually say for sure that ain't it.</p>
+
+<p>There's more to the process. This glomming together of letters is what Hofstadter calls "entropy-reducing steps", in that we are creating more and more order in the
+string we're looking at. Sounds great, right? Here's a counterexample, though: what if our letters are A, B, O, and T? And what if the syllable we find first is BOT? It's
+a perfectly cromulent syllable, but it leaves the A without any partners at all. Now, Jumbo also knows that "A" can be a syllable on its own, and so it won't actually have
+a problem returning "ABOT" or "BOTA" as possible word candidates. But ideally we'd also be able to match that A up with the O and end up with "BOAT", which is arguably a
+better choice because it's all one syllable, if nothing else. To do that after grouping "BOT", though, we have to break apart some structure we already like.</p>
+
+<p>This kind of tradeoff happens all the time in creative thought. We're always admonished to kill our darlings when writing, because every now and then, the pieces that fall
+back together will be a better combination. At its most minimalist, this principle gives us "entropy-increasing steps" like breaking up a bot to build a boat.</p>
+
+<p>And once we get to longer words (or pseudowords, anyway), there are also "entropy-preserving steps" we can take to move through anagram space without breaking things.
+This kind of step includes shuffling groups between syllables, spoonerizing two syllables, and so on. Hofstadter's examples of these two steps are turning <em>pan-gloss</em> into
+<a href="pang-loss*, and then into *lang-poss*. A human ">Jumblist</a> might do this sort of thing consciously or simply subconsciously, but this jostling around of the pieces parts until
+they settle into a good solution is the key to what Hofstadter was after in proposing this model.</p>
+
+<h2>Why do I care?</h2>
+
+<p>So why, in the Year of our Lord 2024, when the headlines are clearly telling us that AI is already here and taking the world by storm, am I recapitulating the development
+of a program that was written when dinosaurs walked the Earth? I'm doing it for the simplest of all human reasons&mdash;because all those people are <em>wrong</em>, and I, following
+Hofstadter, am <a href="right*. That stuff the oligarchs are peddling isn't human-grade intelligence; it doesn't ">understand</a> <em>anything</em>. The pea they keep moving under
+their shells is that it never will. Oh, sure&mdash;their approach is doing some really whiz-bang things, and I'm just as excited about its applications as the next guy.
+But the technical problems people already see with it&mdash;the fact that it can't tell truth from falsehood, that it can't make moral judgements, that it costs an arm and a
+leg in terms of the electricity required to run it, said electricity being generated from fossil fuels on a warming planet we'd all rather stayed habitable&mdash;all that is
+inherent to the very approach and won't be resolved by building a bigger model, even if there were a business case for spending even <em>more</em> electricity to get more facile
+versions of the same hallucinations. (To say nothing of the many other manifest problems with AI-as-it-exists in the applications-it's-marketed-for.)</p>
+
+<p>If we want anything like actual understanding in our software tools, we're going to have to model the human mind, not assemble an even bigger pile of statistics about
+which sentence sounds more like stuff we've read on the Internet. Thirty years ago, I was certain I knew how to get there. Nothing in the past thirty years has changed
+my mind, but I've been busy. Now, I intend to get things right. The Jumbo domain is the simplest of the various projects to have taken this approach&mdash;it has the fewest
+moving parts&mdash;and so I'm starting here, just as Hofstadter did in 1982. If I can make it work, there will be more.</p>
+
+<p>In the next article in this series, I'll talk a bit about the architecture I'm building (the same architecture that has haunted my thoughts for thirty years)
+to make it work. It's not identical to any previous project among Hofstadter's working group, any more than the program I'm writing now is Jumbo. But I hope it will
+get us to the same place, and then take us to the next place or two.</p>
+
+
+</div></td></table>
+
+<br><br><br><br><div class="content">
+   <center><img src="/images/black.gif" height=1 width=300><br>
+   <font size="-1"><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" />
+      </a><br />
+   This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
+   </font>
+</center>
+</div>
+
+<script data-goatcounter="https://vivtek.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
