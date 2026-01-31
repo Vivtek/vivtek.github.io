@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<title>Jum sprint (November 8 - January 8)</title>
+<link href="/styles/vv.css" rel="stylesheet">
+</head>
+<body>
+<table width="100%">
+<tr>
+<td valign="top" width="150px"><div class="sidebar">
+<div class="border">
+<div class="sidemenu">
+<p class="smtitle">vivtek</p>
+<p>[ <a href="/">home</a> ]</p>
+<p>[ <a href="/blog/">blog</a> ]</p>
+<p>[ <a href="/recent.html">recent</a> ]</p>
+<p>[ <a href="/projects/">programming</a> ]</p>
+<p>[ <a href="/translation/">translation</a> ]</p>
+<p>[ <a href="/fiction/">fiction</a> ]</p>
+<p>[ <a href="/contact.html">contact</a> ]</p>
+<p class="smtitle">blog</p>
+                                                                    <p>[ <a href="/blog/">current era</a> ]</p>
+                                                                    <p>[ <a href="/blog/ancient">antiquity</a> ]</p>
+                                                                    <p>[ <a href="/blog/keywords">keywords</a> ]</p>
+
+</div></div></div>
+</td>
+<td valign="top"><div class="content">
+
+<div class="title">Jum sprint (November 8 - January 8)</div>
+<div class="date">Published 2026-01-08 </div>
+
+<p>I've decided to break off the current Jumbo sprint. I wrote a more detailed tech report on the "faux milestone" (I'll drop
+a link here once I have the tech report download area up and running), but I
+ended up feeling some qualms about how definitive that milestone really is. Does the completion of half a system rise to
+the momentous nature of a tech report? Probably not.</p>
+
+<p>But a blog post? Sure&mdash;and I do want to explain what it is I completed, why it's interesting, and why I stopped at that point.
+I'll get started on the background after the fold.</p>
+
+<p>At the risk of repeating myself (again), this is a halfway point in the Jumbo project, which is of course why I called it
+"Jum". The Jumbo project is the redevelopment of Doug Hofstadter's 1982 Jumbo project that was the first implementation of
+the core architecture of all the work of FARG, which is the parallel terraced scan. My overall goal in this thread of my
+shadow doctoral work is a general recapitulation of the FARG systems on the basis of a unified architectural infrastructure,
+and I started with Jumbo because Hofstadter started with Jumbo.</p>
+
+<p>My first stab at that was in March of 2024, and came to an end with the solar eclipse&mdash;because I went to Dallas to see it, and
+the travel forced a very real breaking point. I had some really solid ideas about how to do it right, but ended up splitting
+the basic terraced-scan functionality out of the project in order to test that more thoroughly before getting down to the
+business of designing more involved codelet ecosystems. That was done in October of last year, and so this new Jumbo sprint
+started in early November.</p>
+
+<p>The early stages were very similar to the NaiveSort domain I'd implemented for testing in October, but with more levels of
+complexity and thus more need for detailed test scenarios, and while working with that I started to abstract out and consolidate
+the various actions against the Workspace that each codelet could take. I ended up thinking about those actions as bundled
+"Workspace moves," and to test those right would really need another round in the terraced scan project.</p>
+
+<p>Then in December, I realized that my original strategy of modeling sparks (which are proposed bonds) as units in the Workspace
+causes a lot of churn in the Workspace that could be avoided by thinking of proposals as framelets. That approach occurred to
+me after I found the original 1983 text of Hofstadter's paper <em>The Architecture of Jumbo</em>, but it had been building for a while,
+arguably since the night in May of 2024 when I coined the term "framelet."</p>
+
+<p>Jumbo breaks down into two or possibly three categories of codelet, which Hofstadter calls entropy-reducing, entropy-preserving,
+and entropy-increasing codelets. I waffle on calling the entropy-increasing codelets a full category, because they're just the
+breaker codelets&mdash;and how much domain-specific thinking do you need to break things? They're vital, because otherwise your
+scan gets stuck with structure that won't work, but they're very simple.</p>
+
+<p>So in real terms, Jumbo is easily divided into the entropy-reducing codelets that assemble letters up to the point where they're
+all in a single word-like string, and the entropy-preserving codelets that shuffle parts of already-built syllables
+and words around to find variants that might work better.</p>
+
+<p>When I originally launched into development, I thought that sparks should be units in the Workspace because I wanted to draw
+the spark as part of the animated picture of the process, and I'd gotten stuck on that conceptualization by the time I started
+thinking about the shuffling codelets. But what corresponds to the spark in a proposed shuffle? How would you draw it? Possibly
+a dotted jumper line from one place to another in the string&mdash;but as I started thinking about how those shufflers would work,
+it seemed to me that that the shuffle proposal just wasn't the same kind of thing.</p>
+
+<p>At some point it dawned on me that I had no intention at all of implementing a shuffle proposal as a Workspace change. I was
+already thinking of them as framelets. Since I was just about done with the entropy-reducing ladder of word assembly, I decided
+it was time to pull back to the support module to implement and test both moves and proposal framelets, then return to Jumbo
+with new tools. At first I thought to call the first half JumboLite, but fortunately I realized at the last moment a far more
+Hofstadterian nomenclature, and called it Jum. (The shuffling codelets will perforce be called <em>Bo</em>).</p>
+
+<p>The code for Jum is already available <a href="https://codeberg.org/Vivtek/AI-FARG-Jumbo/src/branch/main/lib/AI/FARG/Jum.pm">on Codeberg</a>, although I should warn you it's still a bit raw. I implemented
+some of the codelets using formal moves in order to make it easier to write test scripts, but I didn't follow through consistently.
+I'll revisit Jum once I have moves properly implemented in the Workspace itself, and properly tested in NaiveSort.</p>
+
+<p>More soon!</p>
+
+
+</div></td></table>
+
+<br><br><br><br><div class="content">
+   <center><img src="/images/black.gif" height=1 width=300><br>
+   <font size="-1"><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" />
+      </a><br />
+   This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
+   </font>
+</center>
+</div>
+
+<script data-goatcounter="https://vivtek.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
