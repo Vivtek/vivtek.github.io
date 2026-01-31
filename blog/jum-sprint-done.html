@@ -45,17 +45,18 @@ shadow doctoral work is a general recapitulation of the FARG systems on the basi
 and I started with Jumbo because Hofstadter started with Jumbo.</p>
 
 <p>My first stab at that was in March of 2024, and came to an end with the solar eclipse&mdash;because I went to Dallas to see it, and
-the travel forced a very real breaking point. I had some really solid ideas about how to do it right, but ended up splitting
-the basic terraced-scan functionality out of the project in order to test that more thoroughly before getting down to the
-business of designing more involved codelet ecosystems. That was done in October of last year, and so this new Jumbo sprint
+the travel forced a very real breaking point. On coming back, I tallied up a solid list of technical debt and I had some really
+solid ideas about how to do it right, but in the end it turned out the best way for me to tackle it was to split
+the basic terraced-scan functionality out of the project. That let me test it more thoroughly before getting down to the
+business of designing more involved codelet ecosystems. I finished that up in October of last year, and so this new Jumbo sprint
 started in early November.</p>
 
 <p>The early stages were very similar to the NaiveSort domain I'd implemented for testing in October, but with more levels of
-complexity and thus more need for detailed test scenarios, and while working with that I started to abstract out and consolidate
+complexity and thus more need for detailed test scenarios. While working on those, I started to abstract out and consolidate
 the various actions against the Workspace that each codelet could take. I ended up thinking about those actions as bundled
 "Workspace moves," and to test those right would really need another round in the terraced scan project.</p>
 
-<p>Then in December, I realized that my original strategy of modeling sparks (which are proposed bonds) as units in the Workspace
+<p>Then in December, I realized that my original strategy of modeling sparks (proposed bonds) as units in the Workspace
 causes a lot of churn in the Workspace that could be avoided by thinking of proposals as framelets. That approach occurred to
 me after I found the original 1983 text of Hofstadter's paper <em>The Architecture of Jumbo</em>, but it had been building for a while,
 arguably since the night in May of 2024 when I coined the term "framelet."</p>
