@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<title></title>
+<link href="/styles/vv.css" rel="stylesheet">
+</head>
+<body>
+<table width="100%">
+<tr>
+<td valign="top" width="150px"><div class="sidebar">
+<div class="border">
+<div class="sidemenu">
+<p class="smtitle">vivtek</p>
+<p>[ <a href="/">home</a> ]</p>
+<p>[ <a href="/blog/">blog</a> ]</p>
+<p>[ <a href="/recent.html">recent</a> ]</p>
+<p>[ <a href="/projects/">programming</a> ]</p>
+<p>[ <a href="/translation/">translation</a> ]</p>
+<p>[ <a href="/fiction/">fiction</a> ]</p>
+<p>[ <a href="/contact.html">contact</a> ]</p>
+<p class="smtitle">blog</p>
+                                 <p>[ <a href="/blog/">current era</a> ]</p>
+                                 <p>[ <a href="/blog/ancient">antiquity</a> ]</p>
+                                 <p>[ <a href="/blog/keywords">keywords</a> ]</p>
+
+</div></div></div>
+</td>
+<td valign="top"><div class="content">
+
+<div class="title"></div>
+<div class="date">Published 2026-01-18 </div>
+
+<p>title: Informal moves and codelet design approaches</p>
+
+<p>The actual mechanism of the terraced scan is pretty agnostic about what codelets actually do&mdash;there's no inherent restriction on the actions they can take.
+You're perfectly free to use working data structures that aren't the Workspace, and at some point I'll be exploring that. It might be nice to have some other data
+structure being built, for instance. A database or a document or maybe a code structure or something.</p>
+
+<p>But as I've been actually exercising it and learning how <em>I</em> prefer to design codelets and the ecosystems they cooperate in, I'm starting to converge on some
+best practices. One of those was to group the actions taken by codelets into "fff actions" (fizzle/fail/fire actions taken when the codelet terminates).
+Those started out as just a list of which units should be killed; if a spark fizzles, then the spark unit needs to be deleted. And if a bond is dissolved,
+then obviously the bond unit needs to be deleted.</p>
+
+<p>Then I decided I'd add more options to the fff actions, and ended up with a list of actions that include promotion to a new type, deletion, addition of frustration,
+relief of frustration, and so on.</p>
+
+<p>The Workspace actually has an event notification mechanism. This makes it easy for displays to get notification of what they should be displaying. I'd built
+a grouping mechanism into it that would flag certain events as being components of one higher-level event. So for instance, when we glom a bond group into a unit,
+we do a lot of different things&mdash;delete the bonds, create a glom, add the letters to the glom&mdash;and the display should know that the bond being deleted is being
+deleted <em>to make room for a glom</em>, because we'll display that differently in an animation.</p>
+
+<p>It would be nice if the fff actions could constitute a group, except not everything that constitutes a group can be done in the fff actions, chief of which is that
+the fff actions can't create a new unit, like a bond. One of the reasons I came up with formally defined Workspace moves, actually, is that the move handlers are just arbitrary
+code and can therefore create a new unit and then bind things to it in a single call.</p>
+
+<p>But I still want to have the fff actions available if I'm prototyping a codelet that doesn't have a well-defined move yet. So I've added "start_move" and "end_move"
+to the Workspace to issue start-group and end-group notifications. The only difference is that only one move can be active at a time&mdash;this allows us to compose
+moves without event notification subscribers having to keep track of a group stack. And the final call to fff-action also ends the current move. From a practical
+standpoint, that gives me the option of defining something like informal moves in a codelet prototype&mdash;I can start the move, do whatever I need to do,
+then allow the codelet to fire (or fizzle or fail) to end the move. Later, once I trust it, I can move all that out into a formally defined move to simplify the codelet.</p>
+
+<p>That lets me kind of gently ease into a codelet ecosystem's development, starting with arbitrary anything-goes code, then naming and grouping the move logic, and
+finally pulling it out into formally defined moves. I suspect I'll gradually start thinking in terms of moves first as I gain more experience, but I like leaving
+options.</p>
+
+
+</div></td></table>
+
+<br><br><br><br><div class="content">
+   <center><img src="/images/black.gif" height=1 width=300><br>
+   <font size="-1"><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" />
+      </a><br />
+   This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
+   </font>
+</center>
+</div>
+
+<script data-goatcounter="https://vivtek.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
