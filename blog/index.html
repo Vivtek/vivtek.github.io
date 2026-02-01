@@ -35,14 +35,14 @@
 <div class="title"><a href="ts-informal-moves.html">Informal moves and codelet design approaches</a></div>
 <div class="st2">2026-01-18 </div><br>
 <p>
-The actual mechanism of the terraced scan is pretty agnostic about what codelets actually do&mdash;there's no inherent restriction on the actions they can take.
+The actual mechanism of the terraced scan is agnostic by design about what codelets actually do&mdash;there's no inherent restriction on the actions they can take.
 You're perfectly free to use working data structures that aren't the Workspace, and at some point I'll be exploring that. It might be nice to have some other data
 structure being built, a database or a document or maybe a code structure or something.
 </p><p>
 But as I've been actually exercising it and learning how I prefer to design codelets and the ecosystems they cooperate in, I'm starting to converge on some
-best practices. One of those was to group the actions taken by codelets into "fff actions" (fizzle/fail/fire actions taken when the codelet terminates).
-Those started out as just a list of which units should be killed; if a spark fizzles, then the spark unit needs to be deleted. And if a bond is dissolved,
-then obviously the bond unit needs to be deleted.
+best practices, or at least practices I find easiest to work with. One of them has been to group the actions taken by codelets into "fff actions" (fizzle/fail/fire actions taken
+when the codelet terminates). Those started out as just a list of which units should be killed; if a spark fizzles, then the spark unit needs to be deleted.
+And if a bond is dissolved, then obviously the bond unit needs to be deleted.
 </p>
 <p>(<a href="ts-informal-moves.html">Keep reading</a>)</p>
 </td></tr>
