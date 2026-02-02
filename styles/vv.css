@@ -28,6 +28,13 @@ font-size:x-large;
 color:black;
 background-color:#eeeeee;
 }
+.slimtitle {
+font-family: arial, sans-serif;
+font-weight: bold;
+font-size: large;
+color:black;
+background-color:#eeeeee;
+}
 .date {
 font-family: arial, sans-serif;
 font-style: italic;
