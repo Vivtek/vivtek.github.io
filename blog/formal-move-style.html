@@ -57,7 +57,7 @@ to completion, and I can check whether everything worked as intended. This turne
 <p><b>Post-move callback</b></br>
 A callback can be registered for invocation after each move is completed. Since a move is any change to the Workspace, this is a great time to recalculate the temperature
 and check whether the run is now done, eliminating the need for a done-checker codelet. I never really cared for the idea of putting <em>everything</em> into codelets; administrative
-tasks should happen synchronously as far as I'm concerned. Of course, none of this actually forces you to abandon the idea done-checker-type codelets; maybe there's a good
+tasks should happen synchronously as far as I'm concerned. Of course, none of this actually forces you to abandon the use of done-checker-type codelets; maybe there's a good
 reason to have them, who am I to say?</p>
 
 <p>Now that this phase is done, I'm going to implement some Workspace code to handle the chunking and disbanding of grouping units, and then I'll go back over to Jum and finish
