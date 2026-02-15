@@ -31,31 +31,36 @@
 <div class="date">Published 2026-02-14 </div>
 
 <p>One of the two major items I wanted to take care of in this iteration of the terraced scan engine is something I've been thinking of as <em>move-style</em> codelet design.
-All that really means is that (ideally) all the changes to the Workspace should be carried out in the context of formally defined, named <em>moves</em>. Tonight I
+All that really means is that (ideally) all the changes to the Workspace should be carried out in the context of formally defined, named moves. Tonight I
 pushed a bunch of code to Codeberg implenting a variant on the NaiveSort domain which I call NaiveSortM (which you can see <a href="https://codeberg.org/Vivtek/AI-TerracedScan/src/branch/main/lib/AI/TerracedScan/Domain/NaiveSortM.pm">here</a>). It's the same
-<em>domain</em>, but consistently implemented in pure-move style. I'd done a lot of prototypical hacks in Jum to make moves work, and I've pulled them into the engine now.</p>
+abstract domain, still just sorting numbers, but reimplemented in in a consistent pure-move style. I'd done a lot of prototypical hacks in Jum to make moves work,
+and I've pulled them into the engine now.</p>
 
 <p>Actually, I've gotten a few different things done in the past couple of days.</p>
 
 <p><b>Far better logging</b></br>
-Aside from the fact that the move name is now logged to the enactment (one of the useful things about the move style), I've also decided to just toss everything in
-there. So now the log lists all codelet outcomes, all Workspace notices, the moves executed, and so on. Somehow it still managed to surprise me how useful this is
-in debugging these random sequences of actions.</p>
+Once named moves were making the changes to the Workspace, I realized it made a lot of senes to log them to the enactment to see exactly which actions the codelet took.
+And once that was there, it was easy enough to just toss everything into the log along with moves.
+So now the log lists all codelet outcomes, all Workspace notices, the moves executed, and so on. Somehow it still managed to surprise me how useful this is
+in debugging these random sequences of codelet invocations.</p>
 
 <p><b>Alert system</b></br>
-At any point, the code can raise an alert, which is just a named boolean that is set at the scan level. Alerts are easy to query and can also be unset. I plan to make
+At any point, a codelet can raise an alert, which is just a named boolean that is set at the scan level. Alerts appear in the log, they can be unset or cleared, and they're
+also easy to query while making decisions, which was the point of implementing them. I plan to make
 the temperature cutoffs (e.g. for breaker release) contingent on a given alert state being flagged. Alerts are also logged.</p>
 
 <p><b>More selective test runs</b></br>
-One of the things I'd been wanting during the Jum debugging phase was to keep running instances until something specific happened that I wanted to test. In combination
-with the alert system, this allows me to drop an alert flag in any section of code, then run and rerun the scan until that section gets called. The instance still runs
+One of the things I'd been wanting during the Jum debugging phase was the ability to keep running instances until an instance met some criteria that I wanted to test. In combination
+with the alert system, this allows me to drop an alert flag in any section of code, then rerun scan instances until one calls that section. That instance still runs
 to completion, and I can check whether everything worked as intended. This turned out to be quite useful in getting NaiveSortM working.</p>
 
 <p><b>Post-move callback</b></br>
 A callback can be registered for invocation after each move is completed. Since a move is any change to the Workspace, this is a great time to recalculate the temperature
-and check whether the run is now done. This eliminates the need for a done-checker codelet, which I never really cared for.</p>
+and check whether the run is now done, eliminating the need for a done-checker codelet. I never really cared for the idea of putting <em>everything</em> into codelets; administrative
+tasks should happen synchronously as far as I'm concerned. Of course, none of this actually forces you to abandon the idea done-checker-type codelets; maybe there's a good
+reason to have them, who am I to say?</p>
 
-<p>Now that this phase is done, I'm going to implement some Workspace code to perform chunking and disbanding of grouping units, and then I'll go back over to Jum and finish
+<p>Now that this phase is done, I'm going to implement some Workspace code to handle the chunking and disbanding of grouping units, and then I'll go back over to Jum and finish
 making it a purely move-style domain. After that, it'll be time to make some efficiency changes to the Workspace. I originally built it on my Data::Tab in-memory table
 module for ease of prototyping, but wow does that not scale well.</p>
 
