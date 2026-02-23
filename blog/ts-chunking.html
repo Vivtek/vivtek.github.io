@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<title>Chunking in the Workspace</title>
+<link href="/styles/vv.css" rel="stylesheet">
+</head>
+<body>
+<table width="100%">
+<tr>
+<td valign="top" width="150px"><div class="sidebar">
+<div class="border">
+<div class="sidemenu">
+<p class="smtitle">vivtek</p>
+<p>[ <a href="/">home</a> ]</p>
+<p>[ <a href="/blog/">blog</a> ]</p>
+<p>[ <a href="/recent.html">recent</a> ]</p>
+<p>[ <a href="/projects/">programming</a> ]</p>
+<p>[ <a href="/translation/">translation</a> ]</p>
+<p>[ <a href="/fiction/">fiction</a> ]</p>
+<p>[ <a href="/contact.html">contact</a> ]</p>
+<p class="smtitle">blog</p>
+                                                          <p>[ <a href="/blog/">current era</a> ]</p>
+                                                          <p>[ <a href="/blog/ancient">antiquity</a> ]</p>
+                                                          <p>[ <a href="/blog/keywords">keywords</a> ]</p>
+
+</div></div></div>
+</td>
+<td valign="top"><div class="content">
+
+<div class="title">Chunking in the Workspace</div>
+<div class="date">Published 2026-02-22 </div>
+
+<p>I've pushed some code to AI::TerracedScan that supports chunking in a less ... weird way than I did it in the first pass at Jum.</p>
+
+<p>See, I envisioned the initial letter-cluster accretion process in two steps. In the first step (which I coded up in early 2024), the letters spark to other letters and try to
+form bonds, then short bond groups of three letters if they can. During that phase, bonded letters are still visible to the spark scouts, so there's a bit of boiling around
+to get better clusters.</p>
+
+<p>But for the next level of organization (the gloms), I wanted to hide the component letters; I see the gloms as firmly bound letter clusters that will only get reshuffled,
+or broken up if things aren't working out well&mdash;at which point any number of things get randomly broken up before the system attempts to regroup them, hopefully a bit better.</p>
+
+<p>Since I already had a type promotion feature to allow sparks to get promoted to bonds, I figured I might as well repurpose it. If the letters in a glom are promoted to
+type "bound-letter", then scouts don't see them, and they no longer participate in the letter-spark-to-bond level of activity. And this works great! I even wrote bind and unbind
+methods on the Workspace that did the promotion to "bound-[X]" and back again. But, well, it still feels inelegant.</p>
+
+<p>I'm leaving that in place in case I decide I still like for other situations, but I've also added a "hidden" flag and an "is_chunk" flag to the unit to support explicit
+chunking. A unit is <em>visible</em> if it's not hidden, but all that means is that unit selection will only draw from the visible units instead of all live units of the requested type.
+But when the parent unit is deleted, all its contents are unhidden automatically, which should make things a little easier to code.</p>
+
+<p>So, minor progress. I've been thinking more about efficiency in the Workspace than anything else, but that's a post for another day.</p>
+
+
+</div></td></table>
+
+<br><br><br><br><div class="content">
+   <center><img src="/images/black.gif" height=1 width=300><br>
+   <font size="-1"><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" />
+      </a><br />
+   This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
+   </font>
+</center>
+</div>
+
+<script data-goatcounter="https://vivtek.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
